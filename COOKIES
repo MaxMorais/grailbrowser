@@ -1,0 +1,87 @@
+Cookie support in Grail
+=======================
+
+Disclaimer!
+-----------
+
+  The cookies support in Grail is limited and possibly broken.  It is
+  largely untested.  If you are worried about security, don't use cookies
+  with any browser, but most especially not with Grail.
+
+
+		  This is completely UNSUPPORTED software!
+
+
+Cookies Database
+----------------
+
+  Grail uses the same cookies database file format as Netscape.  When
+  started for the first time with cookies support, it will load the
+  Netscape cookies file if it finds one.  It will save the database to 
+  $GRAILDIR/cookies (usually ~/.grail/cookies on Unix); this is done
+  to prevent bolluxing the Netscape database in case there are bugs in 
+  the Grail implementation.
+
+Policy Structure
+----------------
+
+  Policies can be set for the behavior for both making requests and
+  handling the response.
+
+  When an HTTP request is made, the cookie manager can implement
+  ALWAYS SEND and NEVER SEND; these control whether cookies in the
+  cookie database are sent.  The ASK policy is interpreted as ALWAYS
+  SEND.
+
+  When a response arrives from the HTTP server, the cookie manager can 
+  enforce ALWAYS ACCEPT and NEVER ACCEPT.  If ALWAYS ACCEPT is used,
+  all received cookies which don't violate the cookie specification
+  (ha!) will be added to the database.  NEVER ACCEPT causes them all
+  to be discarded.  The ASK policy will be interpreted as ALWAYS
+  ACCEPT.
+
+What it Doesn't Do
+------------------
+
+  The preference setting dialog allows any of three policies for
+  handling requests and another three for handling responses.  The ASK 
+  policy, which is allowed for both request and response, will always
+  be interpreted as the ALWAYS policy for that setting.  It does this
+  without making any "noise" in the user interface, so a user
+  expecting it to work can easily get screwed.
+
+  BE WARY!
+
+What's Here
+-----------
+
+  There are a few new files that relate to the cookie support.  I'll
+  describe them here so that you know where to look when fixing bugs.
+  I'll also accept patches to Grail, so please send them along.  Since
+  Grail is dead, have no expectation that they'll be re-distributed.
+  ;-)
+
+  ancillary/cookiemgr.py:  The CookieManager class.  This is where
+			   decisions are made to accept or send
+			   cookies based on your preferences
+			   settings.  If you want to support the "Ask" 
+			   settings, this is where your GUI components 
+			   need to be hooked in.
+
+  utils/cookielib.py:	   Low-level support functions.  This includes 
+			   parsing set-cookie: headers and the
+			   Netscape cookies file format.  The CookieDB 
+			   class attempts to support configurable
+			   capacity settings, but this is almost
+			   completely untested.
+
+  prefpanels/CookiesPanel.py  The user-interface component for setting 
+			   the cookie-management policy implemented by 
+			   the CookieManager class.  Note that the
+			   cookie manager cannot enforce all the
+			   policies which can be configured.
+
+  Additional changes have been made to the grail.py,
+  data/grail-defaults, and protocols/httpAPI.py files.  The changes in 
+  these files are minimal, and only define default policies and create 
+  and call the cookie manager.
