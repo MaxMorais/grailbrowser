@@ -92,9 +92,12 @@ def parse_handle(hdl):
 
 def escape(s):
     """Replace special characters '&', '<' and '>' by SGML entities."""
-    s = s.replace("&", "&amp;")    # Must be done first!
-    s = s.replace("<", "&lt;")
-    return s.replace(">", "&gt;")
+    # From cgi.py
+    import regsub
+    s = regsub.gsub("&", "&amp;", s)    # Must be done first!
+    s = regsub.gsub("<", "&lt;", s)
+    s = regsub.gsub(">", "&gt;", s)
+    return s
 
 class hdl_access(nullAPI.null_access):
 

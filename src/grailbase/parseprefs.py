@@ -20,10 +20,10 @@ components of its group.
 """
 
 import string
-import sre as regex
+import regex
 
 validpat = "^\([-a-z0-9_]*\)--\([-a-z0-9_]*\):\(.*\)$"
-valid = regex.compile(validpat, regex.IGNORECASE)
+valid = regex.compile(validpat, regex.casefold)
 
 debug = 0
 

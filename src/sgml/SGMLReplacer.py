@@ -1,12 +1,12 @@
 """Simple parser that handles only what's allowed in attribute values."""
-__version__ = '$Revision: 1.14 $'
+__version__ = '$Revision: 1.12 $'
 
-import re
+import regex
 import string
+from SGMLLexer import *
 
 
-_entref_search = re.compile("&(#?([a-zA-Z0-9][-.a-zA-Z0-9]*));?").search
-del re
+_entref_exp = regex.compile("&\(\(#\|\)[a-zA-Z0-9][-.a-zA-Z0-9]*\)\(;\|\)")
 
 _named_chars = {'#re' : '\r',
                 '#rs' : '\n',
@@ -23,24 +23,24 @@ for i in range(256):
 _chartable = string.joinfields(_chartable, '')
 
 
-def replace(data, entities={}):
-    """Perform general entity replacement on a string."""
+def replace(data, entities = None):
+    """Perform general entity replacement on a string.
+    """
     data = string.translate(data, _chartable)
-    if '&' in data:
+    if '&' in data and entities:
         value = None
-        m = _entref_search(data)
-        while m:
-            ref, term = m.group(1, 2)
-            pos = m.start()
+        pos = _entref_exp.search(data)
+        while pos >= 0 and pos + 1 < len(data):
+            ref, term = _entref_exp.group(1, 3)
             if entities.has_key(ref):
                 value = entities[ref]
             elif _named_chars.has_key(string.lower(ref)):
                 value = _named_chars[string.lower(ref)]
             if value is not None:
-                data = data[:pos] + value + data[m.end():]
+                data = data[:pos] + value + data[pos+len(ref)+len(term)+1:]
                 pos = pos + len(value)
                 value = None
             else:
-                pos = m.end()
-            m = _entref_search(data, pos)
+                pos = pos + len(ref) + len(term) + 1
+            pos = _entref_exp.search(data, pos)
     return data

@@ -28,8 +28,6 @@ import utils
 import PSParser
 import PSWriter
 
-import printing.paper                   # 'paper' used as a local
-
 from grailbase.uricontext import URIContext
 
 
@@ -44,6 +42,7 @@ MULTI_DO_PAGE_BREAK = 1                 # changing this breaks stuff
 def run(app):
     global logfile
     import getopt
+    import paper
     import settings
     settings = settings.get_settings(app.prefs)
     # do this after loading the settings so the user can just call
@@ -65,7 +64,7 @@ def run(app):
     #
     try:
         options, args = getopt.getopt(sys.argv[1:],
-                                      'mvhdcaUl:u:t:sp:o:f:C:P:T:i',
+                                      'mvhdcaUl:u:t:sp:o:f:C:P:T:',
                                       ['color',
                                        'copies=',
                                        'debug',
@@ -163,10 +162,6 @@ def run(app):
         if args[1:]:
             multi = 1
         infp, outfn = open_source(infile)
-        try:
-            infile = infp.url
-        except AttributeError:
-            pass
         if not outfile:
             outfile = (os.path.splitext(outfn)[0] or 'index') + '.ps'
     else:
@@ -187,10 +182,11 @@ def run(app):
     if outfile != '-':
         print 'Outputting PostScript to', outfile
 
-    if infile:
-        context = URIContext(infile)
-        if not url:
-            url = infile
+    if url:
+        context = URIContext(url)
+    elif infile:
+        url = infile
+        context = URIContext(url)
     else:
         # BOGOSITY: reading from stdin
         context = URIContext("file:/index.html")
@@ -340,13 +336,9 @@ def open_source(infile):
         # use posixpath since URLs are expected to be POSIX-like; don't risk
         # that we're running on NT and os.path.basename() doesn't "do the
         # right thing."
-        try:
-            infile = infp.url
-        except AttributeError:
-            pass
         fn = posixpath.basename(urlparse.urlparse(infile)[2])
     else:
-        fn = posixpath.basename(infile)
+        fn = infile
     return infp, fn
 
 
@@ -437,6 +429,8 @@ class explicit_multi_transform:
 
 
 def usage(settings):
+    import printing.paper
+    #
     progname = os.path.basename(sys.argv[0])
     print 'Usage:', progname, '[options] [file-or-url]'
     print '    -u: URL for footer'

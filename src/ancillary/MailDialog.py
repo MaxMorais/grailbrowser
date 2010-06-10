@@ -8,7 +8,7 @@ practice in Web user agents.
 This class is separated out from the protocols.mailtoAPI module to allow
 user-defined handling of the mailto: scheme to subclass this dialog.
 """
-__version__ = '$Revision: 2.6 $'
+__version__ = '$Revision: 2.5 $'
 
 import cgi
 import grailutil
@@ -22,8 +22,6 @@ from Tkinter import *
 from urlparse import urlparse, urlunparse
 from __main__ import GRAILVERSION
 from Context import LAST_CONTEXT
-
-from grailbase import utils
 
 
 COMMON_HEADERS = (
@@ -40,7 +38,7 @@ if os.sys.platform[:3] == 'sco':
     # Use MMDF instead of sendmail
     SENDMAIL = "/usr/mmdf/bin/submit -mtlrxto,cc\'*\'s"
     # submit needs a Date: field or it will not include it
-    COMMON_HEADERS = COMMON_HEADERS + ((2, "date"),)
+    COMMON_HEADERS = tuple(map(None, COMMON_HEADERS) + [(2, "date")])
     TEMPLATE ="""\
 To: %(to)s
 Date: %(date)s
@@ -51,7 +49,7 @@ X-Mailer: %(mailer)s
 X-URL: %(url)s
 """
 else:
-    SENDMAIL = None
+    SENDMAIL = "/usr/lib/sendmail -t" # XXX
     TEMPLATE ="""\
 To: %(to)s
 Subject: %(subject)s
@@ -64,23 +62,6 @@ X-URL: %(url)s
 DISALLOWED_HEADERS = ['from', 'appearantly-to', 'bcc', 'content-length',
                       'content-type', 'mime-version', 'to',
                       'content-transfer-encoding', 'x-mailer', 'x-url']
-
-
-def get_sendmail_cmd():
-    """Return the appropriate command to submit mail to the MTA."""
-    if SENDMAIL is not None:
-        return SENDMAIL
-    prefs = utils.get_grailapp().prefs
-    cmd = prefs.Get("helpers", "sendmail-command")
-    if not cmd:
-        for cmd in ("/usr/lib/sendmail", "/usr/sbin/sendmail"):
-            if os.path.isfile(cmd):
-                cmd = cmd + " -t"
-                break
-        else:
-            cmd = None
-    print "Mail command:", `cmd`
-    return cmd
 
 
 class MailDialog:
@@ -186,7 +167,7 @@ class MailDialog:
             self.text['cursor'] = 'watch'
             self.root.update_idletasks()
             if message[-1] != '\n': message = message + '\n'
-            p = os.popen(get_sendmail_cmd(), 'w')
+            p = os.popen(SENDMAIL, 'w')
             p.write(message)
             sts = p.close()
             if sts:

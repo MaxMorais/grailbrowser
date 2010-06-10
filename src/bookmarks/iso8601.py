@@ -11,6 +11,7 @@ This module was written by Fred L. Drake, Jr. <fdrake@acm.org>.
 
 __version__ = '1.0'
 
+import string
 import time
 
 
@@ -77,7 +78,7 @@ def ctime(t):
     """Similar to time.ctime(), but using ISO-8601 format."""
     return tostring(t, time.timezone)
 
-
+
 # Internal data and functions:
 
 import re
@@ -99,26 +100,24 @@ del re
 
 
 def __extract_date(m):
-    year = int(m.group("year"))
+    year = string.atoi(m.group("year"), 10)
     julian = m.group("julian")
     if julian:
-        return __find_julian(year, int(julian))
-    month = m.group("month")
+        return __find_julian(year, string.atoi(julian, 10))
+    month = string.atoi(m.group("month"), 10)
     day = 1
     if month is None:
         month = 1
+    elif not 1 <= month <= 12:
+        raise ValueError, "illegal month number: " + m.group("month")
     else:
-        month = int(month)
-        if not 1 <= month <= 12:
-            raise ValueError, "illegal month number: " + m.group("month")
+        day = m.group("day")
+        if day:
+            day = string.atoi(day)
+            if not 1 <= day <= 31:
+                raise ValueError, "illegal day number: " + m.group("day")
         else:
-            day = m.group("day")
-            if day:
-                day = int(day)
-                if not 1 <= day <= 31:
-                    raise ValueError, "illegal day number: " + m.group("day")
-            else:
-                day = 1
+            day = 1
     return year, month, day
 
 
@@ -128,15 +127,15 @@ def __extract_time(m):
     hours = m.group("hours")
     if not hours:
         return 0, 0, 0
-    hours = int(hours)
+    hours = string.atoi(hours, 10)
     if not 0 <= hours <= 23:
         raise ValueError, "illegal hour number: " + m.group("hours")
-    minutes = int(m.group("minutes"))
+    minutes = string.atoi(m.group("minutes"), 10)
     if not 0 <= minutes <= 59:
         raise ValueError, "illegal minutes number: " + m.group("minutes")
     seconds = m.group("seconds")
     if seconds:
-        seconds = float(seconds)
+        seconds = string.atof(seconds)
         if not 0 <= seconds <= 59:
             raise ValueError, "illegal seconds number: " + m.group("seconds")
     else:
@@ -153,10 +152,10 @@ def __extract_tzd(m):
         return 0
     if tzd == "Z":
         return 0
-    hours = int(m.group("tzdhours"))
+    hours = string.atoi(m.group("tzdhours"), 10)
     minutes = m.group("tzdminutes")
     if minutes:
-        minutes = int(minutes)
+        minutes = string.atoi(minutes, 10)
     else:
         minutes = 0
     offset = (hours*60 + minutes) * 60

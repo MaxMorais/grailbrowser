@@ -10,6 +10,7 @@ if __name__ == '__main__':
     sys.path.insert(0, '../pythonlib')
 
 import htmlentitydefs
+import regsub
 import string
 import SGMLHandler
 import SGMLLexer
@@ -239,7 +240,6 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
             self.set_object(None)
             object.end()
 
-    _type_extension_package = "filetypes"
     context = None
     def handle_object(self, attrs):
         if not self.context:            # Ugly, but we don't want to duplicate
@@ -262,12 +262,13 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         if not embedtype:
             return None
         #
+        import copy
         message = extract_keyword('standby', attrs, '')
         message = string.join(string.split(message))
         info = self.context.app.find_type_extension(
-            self._type_extension_package, embedtype)
+            "filetypes", embedtype)
         embedder = info and info.embed
-        obj = embedder and embedder(self, attrs.copy())
+        obj = embedder and embedder(self, copy.copy(attrs))
         if obj:
             if message:
                 self.context.message(message)
@@ -1075,7 +1076,6 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         #
         0x200C: "",                     # zero-width non-joiner
         0x200D: "",                     # zero-width joiner
-        0x2060: "",                     # word joiner (proposed Unicode 3.2)
         }
     def unknown_charref(self, ordinal, terminator):
         if ordinal == 0x2028:           # line separator
@@ -1087,8 +1087,7 @@ class HTMLParser(SGMLHandler.BaseSGMLHandler):
         else:
             data = "%s%d%s" % (SGMLLexer.CRO, ordinal, terminator)
             self.badhtml = 1
-        if data:
-            self.handle_data(data)
+        self.handle_data(data)
 
     def unknown_entityref(self, entname, terminator):
         # support through a method:

@@ -87,7 +87,6 @@ class Browser:
         self.create_statusbar()
         self.viewer = Viewer(self.root, browser=self,
                              width=width, height=height)
-        self.viewer.text.focus_set()
         self.context = self.viewer.context
         if self.app.prefs.GetBoolean('browser', 'show-logo'):
             self.logo_init()
@@ -314,7 +313,6 @@ class Browser:
     # WM_DELETE_WINDOW on toplevel
 
     def on_delete(self):
-        self.root.withdraw()
         self.close()
 
     # <Return> in URL entry field

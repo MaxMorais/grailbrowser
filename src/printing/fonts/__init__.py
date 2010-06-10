@@ -11,10 +11,12 @@ font_from_name(psfontname)
 
 """
 
+import regsub
+
 def font_from_name(psfontname):
     # PostScript fonts use dash delimiters, while Python module names
     # use underscores.
-    modulename = 'PSFont_' + psfontname.replace('-', '_')
+    modulename = 'PSFont_' + regsub.gsub('-', '_', psfontname)
     # no need to do any caching since the import mechanism does that
     # for us!
     module = __import__(modulename, globals(), locals())

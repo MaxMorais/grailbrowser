@@ -24,10 +24,6 @@ browser--smooth-scroll-hack:	0
 browser--enable-pil:		1
 browser--license-agreed-to:	0
 #
-# Helper applications
-#
-helpers--sendmail-command:
-#
 # Help menu contents
 #
 # - Entries are two lines.
@@ -288,9 +284,6 @@ applets--load: all
 #
 security--enable-ilu: 0
 #
-cookies--receive-action: ask
-cookies--send-action:    always-send
-#
 # Disk Cache preferences:
 # (directory is relative to $GRAILDIR unless absolute)
 #
@@ -322,7 +315,7 @@ sockets--number: 5
 # ietf: URN resolution templates
 #
 ietf-resolver--document-template:
-    http://www.ietf.org/%(type)s/%(type)s%(number)04d.txt
+    http://info.internet.isi.edu/in-notes/%(type)s/files/%(type)s%(number)s.txt
 ietf-resolver--meeting-template:
     ftp://ftp.ietf.org/ietf/%(wg)s/%(wg)s-minutes-%(date)s.txt
 ietf-resolver--internet-draft-template:

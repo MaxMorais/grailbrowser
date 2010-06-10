@@ -1,6 +1,6 @@
 """HTML parser for printing."""
 
-__version__ = '$Revision: 1.15 $'
+__version__ = '$Revision: 1.13 $'
 
 import os
 import string
@@ -43,12 +43,6 @@ class PrintingHTMLParser(HTMLParser):
     """
     _inited = 0
     _image_loader = None
-
-    # name of the package for type extensions
-    _type_extension_package = "printing.filetypes"
-
-    # reload control hack; needed so Grail machinery doesn't break
-    reload1 = 0
 
     def __init__(self, writer, settings, context):
         if not self._inited:

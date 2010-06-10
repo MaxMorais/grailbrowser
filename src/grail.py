@@ -138,7 +138,7 @@ def main(args=None):
     if user_init:
         try: import grailrc
         except ImportError, e:
-            # Only catch this if grailrc itself doesn't import,
+            # Only catch this is grailrc itself doesn't import,
             # otherwise propogate.
             if string.split(e.args[0])[-1] != "grailrc":
                 raise
@@ -269,8 +269,6 @@ class Application(BaseApplication.BaseApplication):
         if sys.stdin.isatty():
             # only useful if stdin might generate KeyboardInterrupt
             self.keep_alive()
-        import cookiemgr
-        self.cookies = cookiemgr.CookieManager(self)
         self.browsers = []
         self.iostatuspanel = None
         self.in_exception_dialog = None
@@ -301,10 +299,6 @@ class Application(BaseApplication.BaseApplication):
         except ValueError: pass
 
     def quit(self):
-        # withdrawing the windows first gets them out of the user's way
-        # *much* faster; shutting down takes too long
-        for browser in self.browsers:
-            browser.root.withdraw()
         self.root.quit()
 
     def open_io_status_panel(self):
