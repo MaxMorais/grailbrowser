@@ -1,0 +1,72 @@
+./ancillary/BookmarksGUI.py:1339:                cre = regex.compile(pattern, casefold)
+./ancillary/BookmarksGUI.py:1341:                cre = regex.compile(pattern)
+./ancillary/DocumentInfo.py:90:    __boldpat = regex.compile("-\([a-z]*bold\|demi\)-", regex.casefold)
+./ancillary/GlobalHistory.py:29:GRAIL_RE = regex.compile('\([^ \t]+\)[ \t]+\([^ \t]+\)[ \t]+?\(.*\)?')
+./ancillary/GlobalHistory.py:81:        elif regex.match('MCOM-Global-history-file-1', line) >= 0:
+./ancillary/PrefsPanels.py:38:modname_matcher = regex.compile("^\(.*\)Panel.py[c]?$")
+./ancillary/RemoteControl.py:141:    cre = regex.compile('\([^:]+\)?:\([0-9]+\)\(\.\([0-9]+\)\)?')
+./ancillary/RemoteControl.py:169:        self._cmdre = regex.compile('\([^ \t]+\)\(.*\)')
+./AppletLoader.py:14:codeprog = regex.compile('^\(.*/\)?\([_a-zA-Z][_a-zA-Z0-9]*\)\.py$')
+./Authenticate.py:58:    basic_realm = regex.compile('realm="\(.*\)"')
+./CacheMgr.py:427:    string_date = regex.compile('^[A-Za-z]')
+./CacheMgr.py:691:    cache_file = regex.compile('^spam[0-9]+')
+./filetypes/text_x_python.py:67:    __ws_width = regex.compile("[%s]*" % string.whitespace).match
+./grailbase/app.py:53:    __data_scheme_re = regex.compile(
+./grailbase/parseprefs.py:25:validpat = "^\([-a-z0-9_]*\)--\([-a-z0-9_]*\):\(.*\)$"
+./grailbase/parseprefs.py:26:valid = regex.compile(validpat, regex.casefold)
+./html/frameset.py:133:    sizeprog = regex.compile("[ \t]*\([0-9]*\)\([%*]?\)")
+./html/table.py:21:CELLGEOM_RE = regex.compile('%sx%s\+%s\+%s' % (('\([-+]?[0-9]+\)',) * 4))
+./protocols/fileAPI.py:131:        prog = regex.compile(self.listing_pattern)
+./protocols/ftpAPI.py:208:        prog = regex.compile(self.listing_pattern)
+./protocols/ftpAPI.py:341:    _size_re = regex.compile("(\([0-9][0-9]*\) bytes)", regex.casefold)
+./protocols/httpAPI.py:34:replypat = httplib.HTTP_VERSIONS_ACCEPTED + '[ \t]+\([0-9][0-9][0-9]\)\(.*\)'
+./protocols/httpAPI.py:35:replyprog = regex.compile(replypat)
+./protocols/httpAPI.py:37:httplib.replypat = replypat
+./protocols/httpAPI.py:42:endofheaders = regex.compile("\n[ \t]*\r?\n")
+./pythonlib/keyword.py:64:    strprog = regex.compile('"\([^"]+\)"')
+./Reader.py:910:    __boldpat = regex.compile("-\([a-z]*bold\)-", regex.casefold)
+./SampleGrailDir/user/rcgrail.py:49:    cre = regex.compile('\([^:]+\)?:\([0-9]+\)\(\.\([0-9]+\)\)?')
+./sgml/HTMLParser.py:1158:    __scratch_re = regex.compile("[ \t]*\n")
+./sgml/SGMLLexer.py:12:COM = "--"                              # comment start or end
+./sgml/SGMLLexer.py:20:MDO = "<!"                              # markup declaration open
+./sgml/SGMLLexer.py:26:STAGO = "<"                             # start tag open
+./sgml/SGMLLexer.py:278:        re = "%s%s[%s]*%s" % (ETAGO, tag, string.whitespace, TAGC)
+./sgml/SGMLLexer.py:27:ETAGO = "</"                            # end tag open
+./sgml/SGMLLexer.py:280:            self._lit_etag_re = regex.compile(re, regex.casefold)
+./sgml/SGMLLexer.py:282:            self._lit_etag_re = regex.compile(re)
+./sgml/SGMLLexer.py:442:        if rawdata[i:i+4] <> (MDO + COM):
+./sgml/SGMLLexer.py:446:            pos = i + len(MDO)
+./sgml/SGMLLexer.py:585:                self.lex_data(ETAGO)
+./sgml/SGMLLexer.py:650:OPTIONAL_WHITESPACE = "[%s]*" % string.whitespace
+./sgml/SGMLLexer.py:651:interesting = regex.compile('[&<]')
+./sgml/SGMLLexer.py:652:incomplete = regex.compile('&\([a-zA-Z][a-zA-Z0-9]*\|#[0-9]*\)?\|'
+./sgml/SGMLLexer.py:657:entityref = regex.compile(ERO + '\([a-zA-Z][-.a-zA-Z0-9]*\)[^-.a-zA-Z0-9]')
+./sgml/SGMLLexer.py:658:simplecharref = regex.compile(CRO + '\([0-9]+[^0-9]\)')
+./sgml/SGMLLexer.py:660:    = regex.compile(CRO + '\([0-9]+[^0-9]\|[a-zA-Z.-]+[^a-zA-Z.-]\)')
+./sgml/SGMLLexer.py:661:processinginstruction = regex.compile('<\?\([^>]*\)' + PIC)
+./sgml/SGMLLexer.py:663:starttagopen = regex.compile(STAGO + '[>a-zA-Z]')
+./sgml/SGMLLexer.py:664:shorttagopen = regex.compile(STAGO + '[a-zA-Z][a-zA-Z0-9.-]*'
+./sgml/SGMLLexer.py:665:                             + OPTIONAL_WHITESPACE + NET)
+./sgml/SGMLLexer.py:666:shorttag = regex.compile(STAGO + '\([a-zA-Z][a-zA-Z0-9.-]*\)'
+./sgml/SGMLLexer.py:667:                         + OPTIONAL_WHITESPACE + NET + '\([^/]*\)' + NET)
+./sgml/SGMLLexer.py:668:endtagopen = regex.compile(ETAGO + '[<>a-zA-Z]')
+./sgml/SGMLLexer.py:669:endbracket = regex.compile('[<>]')
+./sgml/SGMLLexer.py:670:endtag = regex.compile(ETAGO +
+./sgml/SGMLLexer.py:673:special = regex.compile(MDO + '[^>]*' + MDC)
+./sgml/SGMLLexer.py:674:markupdeclaration = regex.compile(MDO +
+./sgml/SGMLLexer.py:678:                                  + COM + '\([^-]\|-[^-]\)*' + COM
+./sgml/SGMLLexer.py:679:                                  + '\)' + OPTIONAL_WHITESPACE
+./sgml/SGMLLexer.py:681:md_name = regex.compile('\([^>%s\'"]+\)' % string.whitespace
+./sgml/SGMLLexer.py:682:                        + OPTIONAL_WHITESPACE)
+./sgml/SGMLLexer.py:683:md_string = regex.compile('\("[^"]*"\|\'[^\']*\'\)' + OPTIONAL_WHITESPACE)
+./sgml/SGMLLexer.py:684:commentopen = regex.compile(MDO + COM)
+./sgml/SGMLLexer.py:685:commentclose = regex.compile(COM + OPTIONAL_WHITESPACE + MDC)
+./sgml/SGMLLexer.py:686:tagfind = regex.compile('[a-zA-Z][a-zA-Z0-9.-]*')
+./sgml/SGMLLexer.py:687:attrfind = regex.compile(
+./sgml/SGMLLexer.py:690:    + '\(' + OPTIONAL_WHITESPACE + VI + OPTIONAL_WHITESPACE # VI
+./sgml/SGMLLexer.py:694:tagend = regex.compile(OPTIONAL_WHITESPACE + '[<>/]')
+./sgml/SGMLLexer.py:697:comment_start = regex.compile(COM + "\([^-]*\)-\(.\|\n\)")
+./sgml/SGMLLexer.py:698:comment_segment = regex.compile("\([^-]*\)-\(.\|\n\)")
+./sgml/SGMLLexer.py:699:comment_whitespace = regex.compile(OPTIONAL_WHITESPACE)
+./sgml/SGMLReplacer.py:9:_entref_exp = regex.compile("&\(\(#\|\)[a-zA-Z0-9][-.a-zA-Z0-9]*\)\(;\|\)")
+./Viewer.py:811:            p = regex.compile('#\([0-9]+\.[0-9]+\)-\([0-9]+\.[0-9]+\)')
