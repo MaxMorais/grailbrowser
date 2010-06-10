@@ -121,13 +121,11 @@ class file_access:
         import regex
         from urllib import quote
         from urlparse import urljoin
-        import regsub
-        def escape(s, regsub=regsub):
+        def escape(s):
             if not s: return ""
-            s = regsub.gsub('&', '&amp;', s) # Must be done first
-            s = regsub.gsub('<', '&lt;', s)
-            s = regsub.gsub('>', '&gt;', s)
-            return s
+            s = s.replace('&', '&amp;') # Must be done first
+            s = s.replace('<', '&lt;')
+            return s.replace('>', '&gt;')
         prog = regex.compile(self.listing_pattern)
         data = self.listing_header % {'url': self.url,
                                       'pathname': escape(self.pathname)}

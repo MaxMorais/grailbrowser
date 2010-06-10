@@ -7,7 +7,7 @@ import time
 import ht_time
 import grailutil
 import mimetypes
-import regex
+import sre as regex
 
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
 

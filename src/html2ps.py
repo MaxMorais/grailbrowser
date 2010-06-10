@@ -34,6 +34,9 @@ if sys.version < "1.5":
 import grailutil
 grailutil._grail_root = script_dir
 
+import grailbase.utils
+grailbase.utils._grail_root = script_dir
+
 import printing.main
 import printing.utils
 

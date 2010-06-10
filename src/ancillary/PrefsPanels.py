@@ -3,7 +3,7 @@
 Loads preference modules from GRAILROOT/prefpanels/*Panel.py and
 ~user/.grail/prefpanels/*Panel.py."""
 
-__version__ = "$Revision: 2.37 $"
+__version__ = "$Revision: 2.38 $"
 
 import sys, os
 import imp
@@ -20,7 +20,7 @@ import urlparse
 from Tkinter import *
 import tktools
 import grailutil
-import string, regex, regsub
+import re
 from types import StringType
 
 
@@ -35,7 +35,8 @@ panels_dirs = [os.path.join(grail_root, 'prefpanels'),
                os.path.join(grail_root, 'prefspanels'),
                os.path.expanduser("~/.grail/prefspanels")]
 
-modname_matcher = regex.compile("^\(.*\)Panel.py[c]?$")
+modname_match = re.compile(
+    "^(.*)Panel.py%c?$" % (__debug__ and 'c' or 'o')).match
 
 # Framework
 
@@ -543,7 +544,7 @@ class PrefsPanelsMenu:
                     # [module name, class name, directory, instance]
                     self.panels[nm] = [modnm, clnm, moddir, None]
         raworder = self.app.prefs.Get('preferences', 'panel-order')
-        order = string.split(raworder)
+        order = raworder.split()
         keys = self.panels.keys()
         ordered = []
         for name in order:
@@ -578,11 +579,11 @@ class PrefsPanelsMenu:
                 # Optional dir not there.
                 pass
             for entry in entries:
-                if modname_matcher.match(entry) != -1:
-                    name = regsub.gsub("_", " ", modname_matcher.group(1))
-                    class_name = regsub.gsub("_", "",
-                                             modname_matcher.group(1))
-                    got[name] = ((string.strip(name), class_name, entry, dir))
+                m = modname_match(entry)
+                if m:
+                    name = m.group(1).replace("_", " ")
+                    class_name = m.group(1).replace("_", "")
+                    got[name] = ((name.strip(), class_name, entry, dir))
         return got.values()
                     
     def do_post(self, name):
@@ -604,12 +605,11 @@ class PrefsPanelsMenu:
         try:
             sys.path.insert(0, entry[2])
             try:
-                modnm = entry[0][:string.index(entry[0], '.')]
+                modnm = entry[0][:entry[0].index('.')]
                 mod = __import__(modnm)
                 if reload:
                     reload(mod)
-                class_name = (regsub.gsub(" ", "", name)
-                              + PANEL_CLASS_NAME_SUFFIX)
+                class_name = name.replace(" ", "") + PANEL_CLASS_NAME_SUFFIX
                 # Instantiate it:
                 entry[3] = getattr(mod, class_name)(name, self.app)
                 return 1

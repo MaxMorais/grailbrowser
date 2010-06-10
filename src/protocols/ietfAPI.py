@@ -1,7 +1,7 @@
 """Handler for ietf: URNs.  These are defined in the Internet draft
 draft-ietf-urn-ietf-07.txt (work in progress).
 """
-__version__ = '$Revision: 2.5 $'
+__version__ = '$Revision: 2.7 $'
 
 import grailutil
 import nullAPI
@@ -59,8 +59,16 @@ _meeting_rx = re.compile("mtg-(\d+)-(.*)$")
 del re
 
 _number_to_date = {
-    # this is based on the list of confirmed meeting dates;
+    # This is based on the list of confirmed meeting dates;
     # we need a way to discover when meetings occurred if not in the table
+    # (this is needed to generate the right URLs).
+    #
+    # See http://www.ietf.org/meetings/meetings.html
+    #
+    54: "02jul", 53: "02mar",
+    52: "01dec", 51: "01aug", 50: "01mar",
+    49: "00dec", 48: "99jul", 47: "00mar",
+    46: "99nov", 45: "99jul", 44: "99mar",
     43: "98dec", 42: "98aug", 41: "98apr",
     40: "97dec", 39: "97aug", 38: "97apr",
     37: "96dec", 36: "96jun", 35: "96mar",

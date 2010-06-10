@@ -1,12 +1,14 @@
 """A parser for SGML, using the derived class as static DTD."""
 
-__version__ = "$Revision: 1.27 $"
+__version__ = "$Revision: 1.29 $"
 
 import SGMLLexer
 import SGMLHandler
 import string
 
 SGMLError = SGMLLexer.SGMLError
+
+from SGMLReplacer import replace
 
 
 # SGML parser class -- find tags and call handler functions.
@@ -135,7 +137,10 @@ class SGMLParser(SGMLLexer.SGMLLexer):
         self.lex_data = handler
 
     def lex_starttag(self, tag, attrs):
-        #print 'received start tag', `tag`
+        #print 'received start tag <%s>' % tag
+        for attr, value in attrs.items():
+            if value and '&' in value:
+                attrs[attr] = replace(value, self.entitydefs)
         if not tag:
             if self.omittag and self.stack:
                 tag = self.lasttag
