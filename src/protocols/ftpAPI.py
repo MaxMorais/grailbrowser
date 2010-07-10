@@ -15,7 +15,6 @@ XXX Main deficiencies:
 
 import string
 import sre
-import regsub
 
 import ftplib
 from urllib import unquote, splithost, splitport, splituser, \
@@ -243,9 +242,9 @@ class ftp_access:
 
     def escape(self, s):
         if not s: return ""
-        s = regsub.gsub('&', '&amp;', s) # Must be done first
-        s = regsub.gsub('<', '&lt;', s)
-        s = regsub.gsub('>', '&gt;', s)
+        s = s.replace('&', '&amp;') # Must be done first
+        s = s.replace('<', '&lt;')
+        s = s.replace('>', '&gt;')
         return s
 
     def fileno(self):
