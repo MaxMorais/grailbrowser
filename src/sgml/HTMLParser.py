@@ -10,7 +10,6 @@ if __name__ == '__main__':
     sys.path.insert(0, '../pythonlib')
 
 import htmlentitydefs
-import regsub
 import string
 import SGMLHandler
 import SGMLLexer
@@ -1154,8 +1153,8 @@ class DummyTagInfo(SGMLParser.TagInfo):
 
 
 class NewlineScratcher:
-    import regex
-    __scratch_re = regex.compile("[ \t]*\n")
+    import sre
+    __scratch_re = sre.compile("[ \\t]*\\n")
 
     # for new version only:
 ##     __buffer = ''
