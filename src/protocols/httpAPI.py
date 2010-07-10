@@ -23,23 +23,23 @@ from Assert import Assert
 import grailutil
 import select
 import Reader
-import regex
+import sre
 import StringIO
 import socket
 import sys
 from __main__ import GRAILVERSION
 
 
-httplib.HTTP_VERSIONS_ACCEPTED = 'HTTP/1\.[0-9.]+'
-replypat = httplib.HTTP_VERSIONS_ACCEPTED + '[ \t]+\([0-9][0-9][0-9]\)\(.*\)'
-replyprog = regex.compile(replypat)
+httplib.HTTP_VERSIONS_ACCEPTED = 'HTTP/1\\.[0-9.]+'
+replypat = httplib.HTTP_VERSIONS_ACCEPTED + '[ \\t]+([0-9][0-9][0-9])(.*)'
+replyprog = sre.compile(replypat)
 
 httplib.replypat = replypat
 httplib.replyprog = replyprog
 
 
 # Search for blank line following HTTP headers
-endofheaders = regex.compile("\n[ \t]*\r?\n")
+endofheaders = sre.compile('\\n[ \\t]*\\r?\\n')
 
 
 # Stages
@@ -50,29 +50,48 @@ DATA = 'data'
 DONE = 'done'
 CLOS = 'closed'
 
-class MyHTTP(httplib.HTTP):
+class MyHTTPConnection(httplib.HTTPConnection):
 
     def putrequest(self, request, selector):
         self.selector = selector
-        httplib.HTTP.putrequest(self, request, selector)
+        httplib.HTTPConnection.putrequest(self, request, selector)
+
+
+class MyHTTP(httplib.HTTP):
+
+    _connection_class = MyHTTPConnection
+
+    def __init__(self, host='', port=None, strict=None):
+        "Provide a default host, since the superclass requires one."
+
+        # some joker passed 0 explicitly, meaning default port
+        if port == 0:
+            port = None
+
+        # Note that we may pass an empty string as the host; this will throw
+        # an error when we attempt to connect. Presumably, the client code
+        # will call connect before then, with a proper host.
+        self._setup(MyHTTPConnection(host, port, strict))
+
 
     def getreply(self, file):
         self.file = file
         line = self.file.readline()
         if self.debuglevel > 0: print 'reply:', `line`
-        if replyprog.match(line) < 0:
+        m = replyprog.match(line)
+        if m is None:
             # Not an HTTP/1.0 response.  Fall back to HTTP/0.9.
             # Push the data back into the file.
             self.file.seek(-len(line), 1)
             self.headers = {}
             app = grailutil.get_grailapp()
-            c_type, c_encoding = app.guess_type(self.selector)
+            c_type, c_encoding = app.guess_type(self._conn.selector)
             if c_encoding:
                 self.headers['content-encoding'] = c_encoding
             # HTTP/0.9 sends HTML by default
             self.headers['content-type'] = c_type or "text/html"
             return 200, "OK", self.headers
-        errcode, errmsg = replyprog.group(1, 2)
+        errcode, errmsg = m.group(1, 2)
         errcode = string.atoi(errcode)
         errmsg = string.strip(errmsg)
         self.headers = mimetools.Message(self.file, 0)
@@ -191,8 +210,8 @@ class http_access:
             line = self.readahead[:i+1]
             if replyprog.match(line) < 0:
                 return "received non-HTTP/1.0 server response", 1
-        i = endofheaders.search(self.readahead)
-        if i >= 0:
+        m = endofheaders.search(self.readahead)
+        if m and m.start() >= 0:
             return "received server response", 1
         return "receiving server response", 0
 

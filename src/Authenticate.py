@@ -8,7 +8,7 @@ import tktools
 import string
 import urlparse
 import base64
-import regex
+import sre
 
 class AuthenticationManager:
     """Handles HTTP access authorization.
@@ -55,15 +55,16 @@ class AuthenticationManager:
             # don't know about anything other than basic
             pass
 
-    basic_realm = regex.compile('realm="\(.*\)"')
+    basic_realm = sre.compile('realm="(.*)"')
 
     def basic_get_realm(self,challenge):
         # the actual specification allows for multiple name=value
         # entries seperated by commes, but for basic they don't
         # have any defined value. so don't bother with them.
-        if self.basic_realm.search(challenge) < 0:
+        m = self.basic_realm.search(challenge) < 0:
+        if not m:
             return
-        realm = self.basic_realm.group(1)
+        realm = m.group(1)
         return realm
 
     def basic_credentials(self, data):

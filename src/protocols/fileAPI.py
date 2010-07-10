@@ -21,8 +21,8 @@ LISTING_TRAILER = """</PRE>
 """
 
 LISTING_PATTERN = """\
-^\([-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z]\)\
-\([ \t]+.*[ \t]+\)\([^ \t]+\)$"""
+^([-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z][-a-z])\
+([ \\t]+.*[ \\t]+)([^ \\t]+)$"""
 
 class file_access:
 
@@ -118,26 +118,26 @@ class file_access:
         lines = fp.readlines()
         fp.close()
         import StringIO
-        import regex
+        import sre
         from urllib import quote
         from urlparse import urljoin
-        import regsub
-        def escape(s, regsub=regsub):
+        def escape(s):
             if not s: return ""
-            s = regsub.gsub('&', '&amp;', s) # Must be done first
-            s = regsub.gsub('<', '&lt;', s)
-            s = regsub.gsub('>', '&gt;', s)
+            s = s.replace('&', '&amp;') # Must be done first
+            s = s.replace('<', '&lt;')
+            s = s.replace('>', '&gt;')
             return s
-        prog = regex.compile(self.listing_pattern)
+        prog = sre.compile(self.listing_pattern)
         data = self.listing_header % {'url': self.url,
                                       'pathname': escape(self.pathname)}
         for line in lines:
             if line[-1] == '\n': line = line[:-1]
-            if prog.match(line) < 0:
+            m = prog.match(line)
+            if not m:
                 line = escape(line) + '\n'
                 data = data + line
                 continue
-            mode, middle, name = prog.group(1, 2, 3)
+            mode, middle, name = m.group(1, 2, 3)
             rawname = name
             [mode, middle, name] = map(escape, [mode, middle, name])
             href = urljoin(self.url, quote(rawname))
