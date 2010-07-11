@@ -6,7 +6,7 @@ import string
 from SGMLLexer import *
 
 
-_entref_exp = regex.compile('&((#|)[a-zA-Z0-9][-.a-zA-Z0-9]*)(;|)')
+_entref_exp = re.compile('&((#|)[a-zA-Z0-9][-.a-zA-Z0-9]*)(;|)')
 
 _named_chars = {'#re' : '\r',
                 '#rs' : '\n',
