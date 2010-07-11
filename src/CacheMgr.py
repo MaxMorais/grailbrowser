@@ -7,7 +7,7 @@ import time
 import ht_time
 import grailutil
 import mimetypes
-import regex
+import re
 
 META, DATA, DONE = 'META', 'DATA', 'DONE' # Three stages
 
@@ -424,7 +424,7 @@ class DiskCacheEntry:
         self.encoding = cencoding
         self.transfer_encoding = ctencoding
 
-    string_date = regex.compile('^[A-Za-z]')
+    string_date = re.compile('^[A-Za-z]')
 
     def __repr__(self):
         return self.unparse()
@@ -464,7 +464,9 @@ class DiskCacheEntry:
     def parse_assign(self,rep,var):
         if rep == 'None':
             setattr(self,var,None)
-        elif self.string_date.match(rep) == 1:
+            return
+        match = self.string_date.match(rep)
+        if match and match.start() == 1:
             setattr(self,var,HTTime(str=rep))
         else:
             setattr(self,var,HTTime(secs=string.atof(rep)))
@@ -688,7 +690,7 @@ class DiskCache:
             # should we flush() here? probably...
             self.log.flush()
 
-    cache_file = regex.compile('^spam[0-9]+')
+    cache_file = re.compile('^spam[0-9]+')
 
     def erase_cache(self):
 

@@ -20,13 +20,13 @@ TBD:
 """
 
 import os
-import regex
+import re
 import string
 import sys
 import time
 from grailutil import *
 
-GRAIL_RE = regex.compile('\([^ \t]+\)[ \t]+\([^ \t]+\)[ \t]+?\(.*\)?')
+GRAIL_RE = re.compile('([^ \\t]+)[ \\t]+([^ \\t]+)[ \\t]+?(.*)')
 DEFAULT_NETSCAPE_HIST_FILE = os.path.join(gethome(), '.netscape-history')
 DEFAULT_GRAIL_HIST_FILE = os.path.join(getgraildir(), 'grail-history')
 
@@ -61,8 +61,9 @@ class GrailHistoryReader(HistoryLineReader):
     def parse_line(self, line):
         url = timestamp = title = ''
         try:
-            if GRAIL_RE.match(line) >= 0:
-                url, ts, title = GRAIL_RE.group(1, 2, 3)
+            match = GRAIL_RE.match(line)
+            if match:
+                url, ts, title = match.group(1, 2, 3)
                 timestamp = string.atoi(string.strip(ts))
                 return url, title, timestamp or now()
         except (ValueError, TypeError):
@@ -76,9 +77,9 @@ class HistoryReader:
         # we're looking at
         ghist = []
         line = fp.readline()
-        if regex.match('GRAIL-global-history-file-1', line) >= 0:
+        if re.match('GRAIL-global-history-file-1', line) >= 0:
             linereader = GrailHistoryReader()
-        elif regex.match('MCOM-Global-history-file-1', line) >= 0:
+        elif re.match('MCOM-Global-history-file-1', line) >= 0:
             linereader = NetscapeHistoryReader()
         else:
             return

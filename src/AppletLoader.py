@@ -1,7 +1,7 @@
 """Implement applet loading, possibly asynchronous."""
 
 import os
-import regex
+import re
 import string
 import urllib
 import urlparse
@@ -11,7 +11,7 @@ from Bastion import Bastion
 
 
 # Pattern for valid CODE attribute; group(2) extracts module name
-codeprog = regex.compile('^\(.*/\)?\([_a-zA-Z][_a-zA-Z0-9]*\)\.py$')
+codeprog = re.compile('^(.*/)?([_a-zA-Z][_a-zA-Z0-9]*)\\.py$')
 
 CLEANUP_HANDLER_NAME = "__cleanup__"
 
@@ -110,13 +110,18 @@ class AppletLoader:
             if key not in groups:
                 return 0
         if self.code:                   # <APP> or <APPLET>
-            return codeprog.match(self.code) == len(self.code)
+            match = codeprog.match(self.code)
+            if not match:
+                return 0
+            return match.end() == len(self.code)
         else:                           # <OBJECT>
             if self.classid:
-                if codeprog.match(self.classid) == len(self.classid):
+                match = codeprog.match(self.classid)
+                if match and match.end() == len(self.classid):
                     return 1
             if self.codebase:
-                if codeprog.match(self.codebase) == len(self.codebase):
+                match = codeprog.match(self.codebase)
+                if match and match.end() == len(self.codebase):
                     return 1
             return 0
 
@@ -218,8 +223,9 @@ class AppletLoader:
     def get_defaults(self):
         """Internal -- calculate defaults for applet parameters."""
         if self.code:                   # <APP> or <APPLET>
-            if codeprog.match(self.code) >= 0:
-                self.modname = codeprog.group(2)
+            match = codeprog.match(self.code)
+            if match:
+                self.modname = match.group(2)
             else:
                 self.modname = "?" # Shouldn't happen
             if self.name:
@@ -229,20 +235,25 @@ class AppletLoader:
             self.codeurl = self.context.get_baseurl(
                 self.codebase, self.code)
         elif self.classid or self.codebase: # <OBJECT>
-            if self.classid and codeprog.match(self.classid) >= 0:
-                self.codeurl = self.classid
-                self.modname = codeprog.group(2)
-                self.classname = self.modname
-            elif self.classid:
-                self.classname = self.classid
-                self.modname = self.classid
-                self.codeurl = self.modname + ".py"
-            if self.codebase and codeprog.match(self.codebase) >= 0:
-                self.modname = codeprog.group(2)
-                if not self.classname:
+            if self.classid:
+                match = codeprog.match(self.classid)
+                if match:
+                    self.codeurl = self.classid
+                    self.modname = match.group(2)
                     self.classname = self.modname
-                self.codeurl = self.context.get_baseurl(self.codebase)
-            else:
+                else:
+                    self.classname = self.classid
+                    self.modname = self.classid
+                    self.codeurl = self.modname + ".py"
+            match = None
+            if self.codebase:
+                match = codeprog.match(self.codebase)
+                if match:
+                    self.modname = match.group(2)
+                    if not self.classname:
+                        self.classname = self.modname
+                    self.codeurl = self.context.get_baseurl(self.codebase)
+            if match is None:
                 self.codeurl = self.context.get_baseurl(self.codebase,
                                                         self.codeurl)
             
