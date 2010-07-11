@@ -126,7 +126,7 @@ def unregister_loads():
 import tempfile
 import os
 import socket
-import regex
+import re
 import string
 from Tkinter import tkinter
 from grailutil import *
@@ -138,9 +138,10 @@ if not _filename:
     USER = getenv('USER') or getenv('LOGNAME')
     XDISPLAY = getenv('DISPLAY') or ':0'
     # normalize the display name
-    cre = regex.compile('\([^:]+\)?:\([0-9]+\)\(\.\([0-9]+\)\)?')
-    if cre.match(XDISPLAY):
-        host, display, screen = cre.group(1, 2, 4)
+    cre = re.compile('([^:]+)?:([0-9]+)(\\.([0-9]+))?')
+    match = cre.match(XDISPLAY):
+    if match:
+        host, display, screen = match.group(1, 2, 4)
         if not host:
             host = socket.gethostname()
         if not screen:
@@ -166,7 +167,7 @@ class Controller:
         # clients of this class to register callbacks for commands
         # first.
         self._cbdict = {}
-        self._cmdre = regex.compile('\([^ \t]+\)\(.*\)')
+        self._cmdre = re.compile('([^ \\t]+)(.*)')
 
     def start(self):
         """Begin listening for remote control commands."""
@@ -267,12 +268,13 @@ class Controller:
         rawdata = conn.recv(1024)
         # strip off the command string
         string.strip(rawdata)
-        if self._cmdre.match(rawdata) < 0:
+        match = self._cmdre.match(rawdata)
+        if not match:
             print 'Remote Control: Ignoring badly formatted command:', rawdata
             return
         # extract the command and args strings
-        command = string.strip(self._cmdre.group(1))
-        argstr = string.strip(self._cmdre.group(2))
+        command = string.strip(match.group(1))
+        argstr = string.strip(match.group(2))
         # look up the command string
         if not self._cbdict.has_key(command):
             print 'Remote Control: Ignoring unrecognized command:', command

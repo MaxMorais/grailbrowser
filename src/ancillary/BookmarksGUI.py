@@ -9,6 +9,7 @@ import string
 import sys
 import time
 import tktools
+import re
 
 from Tkinter import *
 from grailutil import *
@@ -1336,9 +1337,9 @@ class BookmarksController(OutlinerController):
         # is case important in a literal match?
         if regex_flag:
             if case_flag:
-                cre = regex.compile(pattern, casefold)
+                cre = re.compile(pattern, re.IGNORECASE)
             else:
-                cre = regex.compile(pattern)
+                cre = re.compile(pattern)
         elif not case_flag:
             pattern = string.lower(pattern)
         # depth-first search for the next (or previous) node
@@ -1383,7 +1384,7 @@ class BookmarksController(OutlinerController):
                 if string.find(text, pattern) >= 0:
                     break
             # regex match
-            elif cre.search(text) >= 0:
+            elif cre.search(text):
                 break
             # have we gone round the world without a match?
             if node == startnode:

@@ -2,7 +2,7 @@
 
 __version__ = '$Revision: 2.16 $'
 
-import regex
+import re
 import string
 import Tkinter
 import tktools
@@ -87,7 +87,7 @@ class DocumentInfoDialog:
                       ).pack(anchor=Tkinter.NE, side=Tkinter.LEFT)
         return fr
 
-    __boldpat = regex.compile("-\([a-z]*bold\|demi\)-", regex.casefold)
+    __boldpat = re.compile('-([a-z]*bold|demi)-', re.IGNORECASE)
     __datafont = None
     def add_label_field(self, label, value, name):
         fr = self.add_field(label, name)
@@ -96,9 +96,10 @@ class DocumentInfoDialog:
         if datafont is None:
             # try to get a medium-weight version of the font if bold:
             font = label['font']
-            pos = self.__boldpat.search(font) + 1
-            if pos:
-                end = pos + len(self.__boldpat.group(1))
+            match = self.__boldpat.search(font)
+            if match:
+                pos = match.start() + 1
+                end = match.end()
                 datafont = "%smedium%s" % (font[:pos], font[end:])
                 DocumentInfoDialog.__datafont = datafont
             else:

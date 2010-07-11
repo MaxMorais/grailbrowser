@@ -20,7 +20,7 @@ import urlparse
 from Tkinter import *
 import tktools
 import grailutil
-import string, regex, regsub
+import string, re
 from types import StringType
 
 
@@ -35,7 +35,7 @@ panels_dirs = [os.path.join(grail_root, 'prefpanels'),
                os.path.join(grail_root, 'prefspanels'),
                os.path.expanduser("~/.grail/prefspanels")]
 
-modname_matcher = regex.compile("^\(.*\)Panel.py[c]?$")
+modname_matcher = re.compile('^(.*)Panel.py[c]?$')
 
 # Framework
 
@@ -578,10 +578,10 @@ class PrefsPanelsMenu:
                 # Optional dir not there.
                 pass
             for entry in entries:
-                if modname_matcher.match(entry) != -1:
-                    name = regsub.gsub("_", " ", modname_matcher.group(1))
-                    class_name = regsub.gsub("_", "",
-                                             modname_matcher.group(1))
+                match = modname_matcher.match(entry)
+                if match:
+                    name = match.group(1).replace("_", " ")
+                    class_name = match.group(1).replace("_", "")
                     got[name] = ((string.strip(name), class_name, entry, dir))
         return got.values()
                     
@@ -608,7 +608,7 @@ class PrefsPanelsMenu:
                 mod = __import__(modnm)
                 if reload:
                     reload(mod)
-                class_name = (regsub.gsub(" ", "", name)
+                class_name = (name.replace(" ", "")
                               + PANEL_CLASS_NAME_SUFFIX)
                 # Instantiate it:
                 entry[3] = getattr(mod, class_name)(name, self.app)
