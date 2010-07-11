@@ -4,7 +4,7 @@ __version__ = '$Id: table.py,v 2.62 1999/03/05 21:55:36 fdrake Exp $'
 ATTRIBUTES_AS_KEYWORDS = 1
 
 import string
-import regex
+import re
 import grailutil
 from Tkinter import *
 from formatter import AbstractWriter, AbstractFormatter
@@ -18,7 +18,7 @@ EMPTY = 102
 
 BadMojoError = 'Bad Mojo!  Infinite loop in cell height calculation.'
 
-CELLGEOM_RE = regex.compile('%sx%s\+%s\+%s' % (('\([-+]?[0-9]+\)',) * 4))
+CELLGEOM_RE = re.compile('%sx%s\+%s\+%s' % (('([-+]?[0-9]+)',) * 4))
 
 DEFAULT_VALIGN = 'top'
 
@@ -989,9 +989,10 @@ class ContainedText(AttrElem):
 ##              print 'non-conformant embedded window:', sub.__class__
 ##              print 'using generic method, which may be incorrect'
                 geom = sub.winfo_geometry()
-                if CELLGEOM_RE.search(geom) >= 0:
+                match = CELLGEOM_RE.search(geom)
+                if match:
                     [w, h, x, y] = map(grailutil.conv_integer,
-                                       CELLGEOM_RE.group(1, 2, 3, 4))
+                                       match.group(1, 2, 3, 4))
                 min_nonaligned = max(min_nonaligned, w) # x+w?
                 maxwidth = max(maxwidth, w)             # x+w?
                 embedheight = max(embedheight, h)       # y+h?

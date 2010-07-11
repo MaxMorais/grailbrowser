@@ -129,8 +129,8 @@ class FrameSet:
                 x = x + width
             y = y + height
 
-    import regex
-    sizeprog = regex.compile("[ \t]*\([0-9]*\)\([%*]?\)")
+    import re
+    sizeprog = re.compile('[ \\t]*([0-9]*)([%*]?)')
 
     def calculate_sizes(self, sizes, total):
         rawlist = string.splitfields(sizes, ",")
@@ -139,8 +139,9 @@ class FrameSet:
         percent = npercent = 0
         star = nstar = 0
         for raw in rawlist:
-            if self.sizeprog.match(raw) >= 0:
-                number, type = self.sizeprog.group(1, 2)
+            match = self.sizeprog.match(raw)
+            if match:
+                number, type = match.group(1, 2)
             else:
                 number, type = "1", "*"
                 # XXX report error?

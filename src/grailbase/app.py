@@ -3,7 +3,7 @@ __version__ = '$Revision: 2.2 $'
 
 import os
 import mimetypes
-import regex
+import re
 import string
 import utils
 
@@ -50,8 +50,8 @@ class Application:
         raise RuntimeError, "Subclass failed to implement exception_dialog()."
 
 
-    __data_scheme_re = regex.compile(
-        "data:\([^,;]*\)\(;\([^,]*\)\|\),", regex.casefold)
+    __data_scheme_re = re.compile(
+        'data:([^,;]*)(;([^,]*)|),' , re.IGNORECASE)
 
     def guess_type(self, url):
         """Guess the type of a file based on its URL.
@@ -60,7 +60,8 @@ class Application:
         a MIME Content-type header; or None if no type can be guessed.
 
         """
-        if self.__data_scheme_re.match(url) >= 0:
-            scheme = self.__data_scheme_re.group(1) or "text/plain"
+        match = self.__data_scheme_re.match(url)
+        if match:
+            scheme = match.group(1) or "text/plain"
             return string.lower(scheme), self.__data_scheme_re.group(3)
         return mimetypes.guess_type(url)

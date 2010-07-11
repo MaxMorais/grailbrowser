@@ -3,13 +3,15 @@
 __version__ = '$Revision: 1.5 $'
 
 import grailutil
-import regex
+import re
 import string
 import Tkinter
 import token
 
 import AppletLoader
 import sgml.HTMLParser
+
+whitespace = '\\t\\n\x0b\x0c\\r '
 
 
 def embed_text_x_python(parser, attrs):
@@ -46,6 +48,8 @@ class AppletEmbedding(sgml.HTMLParser.Embedding):
     def end(self):
         self.__apploader.go_for_it()
 
+ws_width = re.compile("[%s]*" % whitespace).match
+
 
 class parse_text_x_python:
     def __init__(self, viewer, reload=0):
@@ -64,10 +68,8 @@ class parse_text_x_python:
 	if token.ISTERMINAL(ntype) and ntype not in IGNORED_TERMINALS:
 	    __wanted_terminals[ntype] = ntype
 
-    __ws_width = regex.compile("[%s]*" % string.whitespace).match
-
     def close(self):
-	self.show("Colorizing Python source text - parsing...")
+        self.show("Colorizing Python source text - parsing...")
 	import parser
 	try:
 	    nodes = parser.ast2list(parser.suite(self.__source), 1)
@@ -79,7 +81,6 @@ class parse_text_x_python:
 	from types import IntType, ListType
 	ISTERMINAL = token.ISTERMINAL
 	wanted = self.__wanted_terminals.has_key
-	ws_width = self.__ws_width
 	tag_add = self.tag_add = self.__viewer.text.tag_add
 	colorize = self.colorize
 	prevline, prevcol = 0, 0
@@ -110,7 +111,9 @@ class parse_text_x_python:
 		       prevcol = 0
 		       prevline = lineno
 		       sourceline = sourcetext[lineno]
-		   prevcol = prevcol + ws_width(sourceline, prevcol)
+           match = ws_width(sourceline, prevcol)
+           if match:
+               prevcol = match.end()
 		   colorize(ntype, nstr, lineno, prevcol)
 		   # point prevline/prevcol to 1st char after token:
 		   if endpos:

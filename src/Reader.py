@@ -10,7 +10,7 @@ from Tkinter import *
 import tktools
 from BaseReader import BaseReader
 import copy
-import regex
+import re
 import time
 
 # mailcap dictionary
@@ -907,7 +907,7 @@ class TransferDisplay:
         else:
             self.__percent = None
 
-    __boldpat = regex.compile("-\([a-z]*bold\)-", regex.casefold)
+    __boldpat = re.compile('-([a-z]*bold)-', re.IGNORECASE)
     __datafont = None
     def make_labeled_field(self, master, labeltext, valuetext='', side=TOP):
         frame = Frame(master)
@@ -918,9 +918,10 @@ class TransferDisplay:
         if self.__datafont is None:
             # try to get a medium-weight version of the font if bold:
             font = label['font']
-            pos = self.__boldpat.search(font) + 1
-            if pos:
-                end = pos + len(self.__boldpat.group(1))
+            match = self.__boldpat.search(font)
+            if match:
+                pos = match.start()+1
+                end = match.end()
                 self.__datafont = "%smedium%s" % (font[:pos], font[end:])
         if self.__datafont:
             try: value['font'] = self.__datafont
