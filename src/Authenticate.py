@@ -61,7 +61,7 @@ class AuthenticationManager:
         # the actual specification allows for multiple name=value
         # entries seperated by commes, but for basic they don't
         # have any defined value. so don't bother with them.
-        m = self.basic_realm.search(challenge) < 0:
+        m = self.basic_realm.search(challenge) < 0
         if not m:
             return
         realm = m.group(1)
