@@ -20,10 +20,10 @@ components of its group.
 """
 
 import string
-import regex
+import re
 
-validpat = "^\([-a-z0-9_]*\)--\([-a-z0-9_]*\):\(.*\)$"
-valid = regex.compile(validpat, regex.casefold)
+validpat = '^([-_a-z0-9]*)--([-_a-z0-9]*):(.*)$'
+valid = re.compile(validpat, re.IGNORECASE)
 
 debug = 0
 
@@ -39,6 +39,7 @@ def parseprefs(fp):
         lineno = lineno + 1
         if line[0] == '#':
             continue
+        match = None
         if line[0] in ' \t':
             # It looks line a continuation line.
             if group:
@@ -49,21 +50,23 @@ def parseprefs(fp):
                         group[cn] = group[cn] + "\n " + value
                     else:
                         group[cn] = value
-        elif valid.match(line) > 0:
-            # It's a header line.
-            groupname, cn, value = valid.group(1, 2, 3)
-            groupname = string.lower(groupname)
-            cn = string.lower(cn)
-            value = string.strip(value)
-            if not groups.has_key(groupname):
-                groups[groupname] = group = {}
-            else:
-                group = groups[groupname]
-            group[cn] = value # XXX Override a previous value
-        elif string.strip(line) != "":
-            # It's a bad line.  Ignore it.
-            if debug:
-                print "Error at", lineno, ":", `line`
+        else:
+            match = valid.match(line)
+            if match:
+                # It's a header line.
+                groupname, cn, value = match.group(1, 2, 3)
+                groupname = string.lower(groupname)
+                cn = string.lower(cn)
+                value = string.strip(value)
+                if not groups.has_key(groupname):
+                    groups[groupname] = group = {}
+                else:
+                    group = groups[groupname]
+                group[cn] = value # XXX Override a previous value
+            elif string.strip(line) != "":
+                # It's a bad line.  Ignore it.
+                if debug:
+                    print "Error at", lineno, ":", `line`
 
     return groups
 
