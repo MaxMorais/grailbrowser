@@ -413,9 +413,9 @@ def group2dirname(group):
     should probably be maintained making the mapping explicit.)
 
     """
-    import regsub, md5
+    import re, md5
     sum = md5.new(group).digest()
-    path = regsub.gsub('[:/\\]+', '_', group)
+    path = re.sub('[:/\\]+', '_', group)
     if len(path) > 15:
         path = path[:7] + '_' + path[-7:]
     path = path + hexstring(sum[:8])

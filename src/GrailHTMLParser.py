@@ -431,11 +431,11 @@ class GrailHTMLParser(HTMLParser):
         Raise IndexError when not enough coordinates are specified.
         
         """
-        import regsub
+        import re
 
         coords = []
 
-        terms = map(string.atoi, regsub.split(string.strip(text), '[, ]+'))
+        terms = map(string.atoi, re.split(string.strip(text), '[, ]+'))
 
         if shape == 'poly':
             # list of (x,y) tuples

@@ -7,7 +7,7 @@ import grailutil
 import time
 import math
 import urllib
-import regsub
+import re
 
 from Cursors import *
 from grailbase.uricontext import URIContext
@@ -392,7 +392,7 @@ class Context(URIContext):
             raise IOError, ("protocol error",
                             "no scheme identifier in URL", url)
         scheme = string.lower(scheme)
-        sanitized = regsub.gsub("[^a-zA-Z0-9]", "_", scheme)
+        sanitized = re.sub("[^a-zA-Z0-9]", "_", scheme)
         modname = sanitized + "API"
         try:
             klass  = self.local_api_handlers[modname]

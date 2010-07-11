@@ -3,7 +3,7 @@ __version__ = '$Revision: 1.6 $'
 import fonts                            # a package
 import utils                            # || module
 import os
-import regsub
+import re
 import settings
 import string
 import sys
@@ -52,13 +52,10 @@ def get_userheader():
 
 
 # Regular expressions.
-L_PAREN = '('
-R_PAREN = ')'
-B_SLASH = '\\\\'
-QUOTE_re = '\\(%c\\|%c\\|%s\\)' % (L_PAREN, R_PAREN, B_SLASH)
+QUOTE_re = '(\\(|\\)|\\\\)'
 
 def cook(string):
-    return regsub.gsub(QUOTE_re, '\\\\\\1', string)
+    return re.sub(QUOTE_re, '\\\\\\1', string)
 
 
 # Keep images that come above the ascenders for the current line
