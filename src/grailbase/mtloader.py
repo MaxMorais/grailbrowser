@@ -51,10 +51,10 @@ class MIMETypeExtension:
             flags = ""
         return "<%s.%s for %s%s>" % (modulename, classname, self.type, flags)
 
-    def __load_attr(self, mod, name, as=None):
-        as = as or name
+    def __load_attr(self, mod, name, load_as=None):
+        load_as = load_as or name
         if hasattr(mod, name):
             v = getattr(mod, name)
         else:
             v = None
-        setattr(self, as, v)
+        setattr(self, load_as, v)

@@ -466,7 +466,7 @@ class DiskCacheEntry:
             setattr(self,var,None)
             return
         match = self.string_date.match(rep)
-        if match and match.start() == 1:
+        if match and match.start() == 0:
             setattr(self,var,HTTime(str=rep))
         else:
             setattr(self,var,HTTime(secs=string.atof(rep)))
