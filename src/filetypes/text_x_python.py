@@ -111,9 +111,9 @@ class parse_text_x_python:
 		       prevcol = 0
 		       prevline = lineno
 		       sourceline = sourcetext[lineno]
-           match = ws_width(sourceline, prevcol)
-           if match:
-               prevcol = match.end()
+		   match = ws_width(sourceline, prevcol)
+		   if match:
+		       prevcol = match.end()
 		   colorize(ntype, nstr, lineno, prevcol)
 		   # point prevline/prevcol to 1st char after token:
 		   if endpos:

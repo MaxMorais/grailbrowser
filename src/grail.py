@@ -64,8 +64,8 @@ Options:
 def main(args=None):
     prefs = grailbase.GrailPrefs.AllPreferences()
     # XXX Disable cache for NT
-    if sys.platform == 'win32':
-        prefs.Set('disk-cache', 'size', '0')
+    #if sys.platform == 'win32':
+    prefs.Set('disk-cache', 'size', '0')	# cache doesn't work on Linux either ATM...
     global ilu_tk
     ilu_tk = 0
     if prefs.GetBoolean('security', 'enable-ilu'):

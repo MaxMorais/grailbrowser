@@ -41,7 +41,7 @@ class WidthMagic:
         #  Getting the 'padx' option of the text widget needs to be done
         #  here for an as-yet undetermined reason.
         return int(self.__text.winfo_width() - self.__removable
-                   - (2 * string.atoi(self.__text["padx"])))
+                   - (2 * string.atoi(str(self.__text["padx"]))))
 
     def get_requested_widths(self):
         return self.__abswidth, self.__percentwidth
@@ -738,7 +738,7 @@ class Viewer(formatter.AbstractWriter):
                 raw = self.text.tag_ranges(tag)
                 list = []
                 for i in range(0, len(raw), 2):
-                    list.append((raw[i], raw[i+1]))
+                    list.append((raw[i].string, raw[i+1].string))
                 return list
         return ()
 
