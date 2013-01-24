@@ -1021,7 +1021,7 @@ class BookmarksController(OutlinerController):
         try:
             list = self._listbox.curselection()
             if len(list) > 0:
-                selection = string.atoi(list[0])
+                selection = string.atoi(str(list[0]))
                 return self.viewer().node(selection), selection
         except AttributeError: pass
         return node, selection
