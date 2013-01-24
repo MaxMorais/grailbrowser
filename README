@@ -1,3 +1,11 @@
+Notes:
+
+* Applets don't work in Python 2 because the rexec module has been deprecated.
+* Caching is disabled because it threw exceptions.
+
+*******************************************************************************
+
+
 GRAIL 0.6
 =========
 

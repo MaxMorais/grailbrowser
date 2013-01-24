@@ -16,7 +16,7 @@ AUTOLAYOUT = 2
 OCCUPIED = 101
 EMPTY = 102
 
-BadMojoError = 'Bad Mojo!  Infinite loop in cell height calculation.'
+BadMojoError = Exception('Bad Mojo!  Infinite loop in cell height calculation.')
 
 CELLGEOM_RE = re.compile('%sx%s\+%s\+%s' % (('([-+]?[0-9]+)',) * 4))
 
@@ -904,7 +904,8 @@ def _get_height(tw):
         # convinced this algorithm always works.
         loopcnt = loopcnt + 1
         if loopcnt > 25:
-            raise BadMojoError, tw.winfo_height()
+		return 10	# just assume *something*
+            #raise BadMojoError  #, tw.winfo_height()
         linecount = linecount + 1
         tw['height'] = linecount
         tw.update_idletasks()
