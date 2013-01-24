@@ -165,7 +165,7 @@ class BMSaveDialog(FileDialog.SaveFileDialog, FileDialogExtras):
 
 
 class BookmarksIO:
-    __format = None
+    __format = "html"	#None
 
     def __init__(self, frame, controller):
         self.__controller = controller
@@ -1097,7 +1097,7 @@ class BookmarksController(OutlinerController):
         if at_end:
             parent.append_child(node)
         else:
-            parenr.insert_child(node, 0)
+            parent.insert_child(node, 0)
         # scroll the newly added node into view
         self.set_modflag(1)
         self.root_redisplay()
