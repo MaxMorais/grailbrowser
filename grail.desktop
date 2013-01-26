@@ -1,0 +1,19 @@
+[Desktop Entry]
+Comment=
+Encoding=UTF-8
+Exec=cd /usr/share/grail/src; python2 grail.py
+GenericName=Python web browser
+Icon=grail_logo.png
+MimeType=
+Name=Grail
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.0
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+Categories=Application;Network
