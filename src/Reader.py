@@ -942,8 +942,8 @@ class TransferDisplay:
         f.pack(pady='1m')
 
         self.__progbar = Frame(f, width=1, background=DARK_BLUE,
-                               height=string.atoi(f.cget('height'))
-                               - 2*string.atoi(f.cget('borderwidth')))
+                               height=string.atoi(str(f.cget('height')))
+                               - 2*string.atoi(str(f.cget('borderwidth'))))
         self.__progbar.place(x=0, y=0)
 
     def stop(self):
